@@ -28,7 +28,6 @@ import org.springframework.dao.DataAccessException;
 
 import java.util.List;
 
-
 /**
  * Generic interface for Data Access Objects (DAO) performing basic entity retrieval operations.
  *

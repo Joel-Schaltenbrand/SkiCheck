@@ -40,8 +40,6 @@ public class ServiceResponse<T> {
 	private List<T> businessObjects = new ArrayList<>();
 	private boolean operationWasSuccessful;
 
-	private ServiceFailureNote serviceFailureNote;
-
 	/**
 	 * Retrieves the information message of the service response.
 	 *
@@ -105,7 +103,7 @@ public class ServiceResponse<T> {
 		if (this.businessObjects == null) {
 			this.businessObjects = new ArrayList<>();
 		}
-		businessObjects.forEach(bo -> this.businessObjects.add(bo));
+		this.businessObjects.addAll(businessObjects);
 	}
 
 	/**
@@ -162,7 +160,7 @@ public class ServiceResponse<T> {
 	 * @return True if the operation was successful, otherwise false.
 	 */
 	public boolean getOperationWasSuccessful() {
-		return operationWasSuccessful;
+		return this.operationWasSuccessful;
 	}
 
 	/**
@@ -171,28 +169,6 @@ public class ServiceResponse<T> {
 	 * @param operationWasSuccessful The success status to be set.
 	 */
 	public void setOperationWasSuccessful(boolean operationWasSuccessful) {
-		if (operationWasSuccessful) {
-			this.serviceFailureNote = null;
-		}
 		this.operationWasSuccessful = operationWasSuccessful;
-	}
-
-	/**
-	 * Retrieves the failure note of the service response.
-	 *
-	 * @return The failure note.
-	 */
-	public ServiceFailureNote getFailureNote() {
-		return serviceFailureNote;
-	}
-
-	/**
-	 * Sets the failure note of the service response.
-	 *
-	 * @param serviceFailureNote The failure note to be set.
-	 */
-	public void setFailureNote(ServiceFailureNote serviceFailureNote) {
-		this.operationWasSuccessful = serviceFailureNote == null;
-		this.serviceFailureNote = serviceFailureNote;
 	}
 }

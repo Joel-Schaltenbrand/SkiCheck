@@ -111,7 +111,7 @@ public class UserDAO implements IUserDAO, HasLogger {
 		long startTime = System.nanoTime();
 		List<UserEntity> userEntities = repository.findAll();
 		long endTime = System.nanoTime();
-		log().debug("Getting all user objects took {} milliseconds", (endTime - startTime) / 1000000);
+		log().debug("Getting all user objects via findAll took {} milliseconds", (endTime - startTime) / 1000000);
 		return userEntities;
 	}
 
@@ -126,7 +126,7 @@ public class UserDAO implements IUserDAO, HasLogger {
 		long startTime = System.nanoTime();
 		Page<UserEntity> userEntities = repository.findAll(pageable);
 		long endTime = System.nanoTime();
-		log().debug("Getting all user objects took {} milliseconds", (endTime - startTime) / 1000000);
+		log().debug("Getting all user objects via findAll with pageable took {} milliseconds", (endTime - startTime) / 1000000);
 		return userEntities;
 	}
 
@@ -142,7 +142,7 @@ public class UserDAO implements IUserDAO, HasLogger {
 		long startTime = System.nanoTime();
 		Page<UserEntity> userEntities = repository.findAll(filter, pageable);
 		long endTime = System.nanoTime();
-		log().debug("Getting all user objects took {} milliseconds", (endTime - startTime) / 1000000);
+		log().debug("Getting all user objects via findAll with filter took {} milliseconds", (endTime - startTime) / 1000000);
 		return userEntities;
 	}
 

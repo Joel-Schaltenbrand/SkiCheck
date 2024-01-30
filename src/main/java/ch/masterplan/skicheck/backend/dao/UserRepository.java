@@ -32,7 +32,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-
 /**
  * Spring Data JPA repository for performing CRUD operations on UserEntity entities.
  */

@@ -70,8 +70,8 @@ import java.util.Optional;
 @Uses(Icon.class)
 public class AdminView extends Div implements BeforeEnterObserver {
 
-	private final String PERSON_ID = "personID";
-	private final String PERSON_EDIT_ROUTE_TEMPLATE = "admin/%s/edit";
+	private static final String PERSON_ID = "personID";
+	private static final String PERSON_EDIT_ROUTE_TEMPLATE = "admin/%s/edit";
 	private final LanguageService languageService;
 	private final ApplicationConfiguration config;
 	private final Grid<UserEntity> grid = new Grid<>(UserEntity.class, false);
@@ -91,7 +91,6 @@ public class AdminView extends Div implements BeforeEnterObserver {
 	private MultiSelectComboBox<Role> roles;
 	private Button resetPassword;
 	private UserEntity userEntity;
-
 
 	/**
 	 * Constructs the admin view.
@@ -115,10 +114,14 @@ public class AdminView extends Div implements BeforeEnterObserver {
 		// Bind fields.
 		binder = new BeanValidationBinder<>(UserEntity.class);
 		binder.bindInstanceFields(this);
-		binder.forField(firstName).asRequired(languageService.getMessage4Key("adminView.notification.firstname.required")).bind(UserEntity::getFirstName, UserEntity::setFirstName);
-		binder.forField(lastName).asRequired(languageService.getMessage4Key("adminView.notification.lastname.required")).bind(UserEntity::getLastName, UserEntity::setLastName);
-		binder.forField(username).asRequired(languageService.getMessage4Key("adminView.notification.username.required")).bind(UserEntity::getUsername, UserEntity::setUsername);
-		binder.forField(email).asRequired(languageService.getMessage4Key("adminView.notification.email.required")).bind(UserEntity::getEmail, UserEntity::setEmail);
+		binder.forField(firstName).asRequired(languageService.getMessage4Key("adminView.notification.firstname.required"))
+				.bind(UserEntity::getFirstName, UserEntity::setFirstName);
+		binder.forField(lastName).asRequired(languageService.getMessage4Key("adminView.notification.lastname.required"))
+				.bind(UserEntity::getLastName, UserEntity::setLastName);
+		binder.forField(username).asRequired(languageService.getMessage4Key("adminView.notification.username.required"))
+				.bind(UserEntity::getUsername, UserEntity::setUsername);
+		binder.forField(email).asRequired(languageService.getMessage4Key("adminView.notification.email.required"))
+				.bind(UserEntity::getEmail, UserEntity::setEmail);
 		binder.forField(hasPaid).bind(UserEntity::isHasPaid, UserEntity::setHasPaid);
 		binder.forField(hasEquipment).bind(UserEntity::isHasEquipment, UserEntity::setHasEquipment);
 		binder.forField(roles).bind(UserEntity::getRoles, UserEntity::setRoles);
@@ -167,14 +170,23 @@ public class AdminView extends Div implements BeforeEnterObserver {
 		grid.addColumn("lastName").setAutoWidth(true);
 		grid.addColumn("username").setAutoWidth(true);
 		grid.addColumn("email").setAutoWidth(true);
-		LitRenderer<UserEntity> paid = LitRenderer.<UserEntity>of("<vaadin-icon icon='vaadin:${item.icon}' style='width: var(--lumo-icon-size-s); height: var(--lumo-icon-size-s); color: ${item.color};'></vaadin-icon>").withProperty("icon", pd -> pd.isHasPaid() ? "check" : "minus").withProperty("color", pd -> pd.isHasPaid() ? "var(--lumo-primary-text-color)" : "var(--lumo-disabled-text-color)");
+		LitRenderer<UserEntity> paid = LitRenderer.<UserEntity>
+						of("<vaadin-icon icon='vaadin:${item.icon}' style='width: var(--lumo-icon-size-s); "
+						+ "height: var(--lumo-icon-size-s); color: ${item.color};'></vaadin-icon>")
+				.withProperty("icon", pd -> pd.isHasPaid() ? "check" : "minus")
+				.withProperty("color", pd -> pd.isHasPaid() ? "var(--lumo-primary-text-color)" : "var(--lumo-disabled-text-color)");
 		grid.addColumn(paid).setHeader(languageService.getMessage4Key("general.hasPaid")).setAutoWidth(true);
 
-		LitRenderer<UserEntity> equipment = LitRenderer.<UserEntity>of("<vaadin-icon icon='vaadin:${item.icon}' style='width: var(--lumo-icon-size-s); height: var(--lumo-icon-size-s); color: ${item.color};'></vaadin-icon>").withProperty("icon", eq -> eq.isHasEquipment() ? "check" : "minus").withProperty("color", eq -> eq.isHasEquipment() ? "var(--lumo-primary-text-color)" : "var(--lumo-disabled-text-color)");
+		LitRenderer<UserEntity> equipment = LitRenderer.<UserEntity>
+						of("<vaadin-icon icon='vaadin:${item.icon}' style='width: var(--lumo-icon-size-s); "
+						+ "height: var(--lumo-icon-size-s); color: ${item.color};'></vaadin-icon>")
+				.withProperty("icon", eq -> eq.isHasEquipment() ? "check" : "minus")
+				.withProperty("color", eq -> eq.isHasEquipment() ? "var(--lumo-primary-text-color)" : "var(--lumo-disabled-text-color)");
 
 		grid.addColumn(equipment).setHeader(languageService.getMessage4Key("general.hasEquipment")).setAutoWidth(true);
 
-		grid.setItems(query -> userService.list(PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query))).stream());
+		grid.setItems(query ->
+				userService.list(PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query))).stream());
 		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
 
 		grid.asSingleSelect().addValueChangeListener(event -> {

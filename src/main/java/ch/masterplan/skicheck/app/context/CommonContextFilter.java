@@ -65,7 +65,7 @@ public class CommonContextFilter extends AbstractApplicationContextFilter implem
 
 		setDefaultLocale(context.getLocale());
 
-		log().debug("Language set to: " + context.getLanguage());
+		log().debug("Language set to {}", context.getLanguage());
 
 		return true;
 	}
@@ -80,7 +80,7 @@ public class CommonContextFilter extends AbstractApplicationContextFilter implem
 	protected void doAfter(HttpServletRequest request, HttpServletResponse response) {
 		CommonContext context = CommonContext.get();
 		setLanguageToSession(request, context);
-		log().debug("Language saved to session: " + context.getLanguage());
+		log().debug("Language saved to session: {}", context.getLanguage());
 	}
 
 	private void setLanguageFromSession(String language, CommonContext context) {
@@ -88,7 +88,7 @@ public class CommonContextFilter extends AbstractApplicationContextFilter implem
 			case "fr" -> context.setLanguage(Language.FR);
 			case "de" -> context.setLanguage(Language.DE);
 			case "it" -> context.setLanguage(Language.IT);
-			case "en" -> context.setLanguage(Language.EN);
+			default -> context.setLanguage(Language.EN);
 		}
 	}
 
@@ -98,7 +98,7 @@ public class CommonContextFilter extends AbstractApplicationContextFilter implem
 				case "fr" -> context.setLanguage(Language.FR);
 				case "de" -> context.setLanguage(Language.DE);
 				case "it" -> context.setLanguage(Language.IT);
-				case "en" -> context.setLanguage(Language.EN);
+				default -> context.setLanguage(Language.EN);
 			}
 		} else {
 			context.setLanguage(Language.DE);

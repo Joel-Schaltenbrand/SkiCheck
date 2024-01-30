@@ -24,7 +24,6 @@
 
 package ch.masterplan.skicheck.ui.view;
 
-
 import ch.masterplan.skicheck.app.configuration.HasLogger;
 import ch.masterplan.skicheck.app.security.AuthenticatedUser;
 import ch.masterplan.skicheck.backend.service.impl.LanguageService;
@@ -118,8 +117,7 @@ public class MainLayout extends AppLayout implements HasLogger {
 			Button buttonLang = new Button();
 			buttonLang.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
 			buttonLang.getStyle().set("cursor", "pointer");
-			buttonLang.getStyle().set("box-shadow", "none");
-			buttonLang.getStyle().set("background-image", "none");
+			removeBG(buttonLang);
 			buttonLang.setText(uiLang.getCode().name());
 			buttonLang.addClickListener(event -> {
 				languageService.saveCurrentLanguage(uiLang);
@@ -134,8 +132,7 @@ public class MainLayout extends AppLayout implements HasLogger {
 			if (i != 0) {
 				Button divider = new Button("|");
 				divider.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
-				divider.getStyle().set("box-shadow", "none");
-				divider.getStyle().set("background-image", "none");
+				removeBG(divider);
 				divider.setEnabled(false);
 				buttons.add(divider);
 			}
@@ -146,6 +143,11 @@ public class MainLayout extends AppLayout implements HasLogger {
 		languageButtonsLayout.removeAll();
 		languageButtonsLayout.add(buttons.toArray(new Button[0]));
 		return languageButtonsLayout;
+	}
+
+	private void removeBG(Button button) {
+		button.getStyle().set("box-shadow", "none");
+		button.getStyle().set("background-image", "none");
 	}
 
 	private SideNav createNavigation() {
@@ -166,7 +168,6 @@ public class MainLayout extends AppLayout implements HasLogger {
 		Footer layout = new Footer();
 		VerticalLayout footerLayout = new VerticalLayout();
 
-
 		Optional<UserEntity> maybeUser = authenticatedUser.get();
 		if (maybeUser.isPresent()) {
 			UserEntity user = maybeUser.get();
@@ -181,8 +182,7 @@ public class MainLayout extends AppLayout implements HasLogger {
 			MenuItem userName = userMenu.addItem("");
 			Button account = new Button("Account", LineAwesomeIcon.USER.create());
 			account.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
-			account.getStyle().set("box-shadow", "none");
-			account.getStyle().set("background-image", "none");
+			removeBG(account);
 			userName.getSubMenu().addItem(account, e -> UI.getCurrent().navigate(AccountView.class));
 			userName.getSubMenu().addSeparator();
 			Div div = new Div();
@@ -196,8 +196,7 @@ public class MainLayout extends AppLayout implements HasLogger {
 			userName.add(div);
 			Button logout = new Button(languageService.getMessage4Key("general.logout"), LineAwesomeIcon.SIGN_OUT_ALT_SOLID.create());
 			logout.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
-			logout.getStyle().set("box-shadow", "none");
-			logout.getStyle().set("background-image", "none");
+			removeBG(logout);
 			userName.getSubMenu().addItem(logout, e -> authenticatedUser.logout());
 
 			footerLayout.add(userMenu);

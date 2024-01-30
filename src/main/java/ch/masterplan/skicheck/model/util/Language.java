@@ -28,8 +28,8 @@ package ch.masterplan.skicheck.model.util;
  * Enumeration representing different language options.
  */
 public enum Language {
-	DE, // German
-	EN, // English
-	FR, // French
-	IT  // Italian
+	DE,
+	EN,
+	FR,
+	IT
 }

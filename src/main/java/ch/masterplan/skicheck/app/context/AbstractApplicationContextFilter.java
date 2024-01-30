@@ -44,7 +44,7 @@ abstract class AbstractApplicationContextFilter implements Filter, HasLogger {
 	/**
 	 * Default constructor.
 	 */
-	public AbstractApplicationContextFilter() {
+	AbstractApplicationContextFilter() {
 		super();
 	}
 

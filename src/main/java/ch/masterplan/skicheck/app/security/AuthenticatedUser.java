@@ -37,7 +37,6 @@ import java.util.Optional;
  * Represents an authenticated user in the application.
  */
 public class AuthenticatedUser implements HasLogger {
-
 	private final UserRepository userRepository;
 	private final AuthenticationContext authenticationContext;
 

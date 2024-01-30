@@ -35,16 +35,17 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 
+import java.io.Serializable;
+
 /**
  * View for the home page.
  */
 @Route(value = "", layout = MainLayout.class)
 @AnonymousAllowed
 @PageTitle("Home")
-public class HomeView extends VerticalLayout {
+public class HomeView extends VerticalLayout implements Serializable {
 
 	private final LanguageService languageService;
-
 
 	/**
 	 * Constructs the home view.

@@ -39,7 +39,7 @@ import jakarta.annotation.security.RolesAllowed;
 @Uses(Icon.class)
 public class AccountView extends Composite<VerticalLayout> {
 
-	//TODO with BeanValidationBinder & LanguageService
 	public AccountView() {
+		// Implement me...
 	}
 }

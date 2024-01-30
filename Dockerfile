@@ -1,4 +1,4 @@
-FROM maven:3-eclipse-temurin-21 as build
+FROM maven:3-eclipse-temurin-21 AS build
 COPY src /home/app/src
 COPY frontend /home/app/frontend
 COPY pom.xml /home/app

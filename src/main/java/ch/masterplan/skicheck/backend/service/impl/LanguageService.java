@@ -61,10 +61,10 @@ public class LanguageService implements HasLogger {
 
 		for (Language language : Language.values()) {
 			UILanguage uiLanguage = switch (language) {
-				case DE -> new UILanguage(messageSource.getMessage("language.de", null, null), language);
-				case EN -> new UILanguage(messageSource.getMessage("language.en", null, null), language);
-				case FR -> new UILanguage(messageSource.getMessage("language.fr", null, null), language);
-				case IT -> new UILanguage(messageSource.getMessage("language.it", null, null), language);
+				case DE -> new UILanguage(messageSource.getMessage("language.de", null, Locale.getDefault()), language);
+				case EN -> new UILanguage(messageSource.getMessage("language.en", null, Locale.getDefault()), language);
+				case FR -> new UILanguage(messageSource.getMessage("language.fr", null, Locale.getDefault()), language);
+				case IT -> new UILanguage(messageSource.getMessage("language.it", null, Locale.getDefault()), language);
 			};
 			languages.add(uiLanguage);
 		}

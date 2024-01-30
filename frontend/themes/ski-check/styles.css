@@ -43,7 +43,3 @@ html {
     --lumo-border-radius-l: var(--lumo-size-m);
 
 }
-
-[theme~="dark"] {
-
-}

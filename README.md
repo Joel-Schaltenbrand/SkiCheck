@@ -11,7 +11,7 @@ the [ICT Berufsbildung Schweiz.](https://www.modulbaukasten.ch/module/306/4/de-D
 ## Deploying using Docker
 
 Use the generated release from [Github](https://ghcr.io/joel-schaltenbrand/skicheck) or with
-` docker run -d -p 8080:8080 ghcr.io/joel-schaltenbrand/skicheck:latest`
+`docker run -d -p 8080:8080 ghcr.io/joel-schaltenbrand/skicheck:latest`
 
 ## Build new Docker image
 

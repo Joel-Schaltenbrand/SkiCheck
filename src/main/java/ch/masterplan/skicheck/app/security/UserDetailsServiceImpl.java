@@ -55,7 +55,9 @@ public class UserDetailsServiceImpl implements UserDetailsService, HasLogger {
 	}
 
 	private static List<GrantedAuthority> getAuthorities(UserEntity userEntity) {
-		return userEntity.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role)).collect(Collectors.toList());
+		return userEntity.getRoles().stream()
+				.map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+				.collect(Collectors.collectingAndThen(Collectors.toList(), List::copyOf));
 	}
 
 	/**

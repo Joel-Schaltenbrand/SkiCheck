@@ -27,7 +27,6 @@ package ch.masterplan.skicheck.backend.service.impl;
 import ch.masterplan.skicheck.app.configuration.HasLogger;
 import ch.masterplan.skicheck.backend.dao.IUserDAO;
 import ch.masterplan.skicheck.backend.service.IUserService;
-import ch.masterplan.skicheck.backend.util.ServiceFailureNote;
 import ch.masterplan.skicheck.backend.util.ServiceMessage;
 import ch.masterplan.skicheck.backend.util.ServiceResponse;
 import ch.masterplan.skicheck.model.user.UserEntity;
@@ -46,7 +45,6 @@ public class UserService implements IUserService, HasLogger {
 
 	private final IUserDAO dao;
 	private final LanguageService languageService;
-
 
 	/**
 	 * Constructs a UserService with the provided IUserDAO and LanguageService.
@@ -104,8 +102,8 @@ public class UserService implements IUserService, HasLogger {
 			serviceResponse.setOperationWasSuccessful(true);
 			serviceResponse.setInfoMessage(new ServiceMessage(languageService.getMessage4Key("userService.message.deleted")));
 		} catch (DataAccessException ex) {
-			log().error("user could not been deleted");
-			serviceResponse.setFailureNote(ServiceFailureNote.parse(ex.getClass()));
+			log().error(ex.getMessage());
+			serviceResponse.setErrorMessage(new ServiceMessage(languageService.getMessage4Key("userService.message.deletedError")));
 			serviceResponse.setOperationWasSuccessful(false);
 		}
 		return serviceResponse;
@@ -122,13 +120,13 @@ public class UserService implements IUserService, HasLogger {
 		ServiceResponse<UserEntity> serviceResponse = getServiceResponse();
 		Optional<UserEntity> userEntity;
 		if (id != null) {
-			log().debug("looking for user by id: " + id);
+			log().debug("looking for user by id: {}", id);
 			try {
 				userEntity = dao.findById(id);
 				serviceResponse.setOperationWasSuccessful(true);
 				if (userEntity.isPresent()) {
 					serviceResponse.addBusinessObject(userEntity.get());
-					log().debug("found user by id: " + id);
+					log().debug("found user by id: {}", id);
 				} else {
 					log().warn("user with id {} not found", id);
 					serviceResponse.setOperationWasSuccessful(true);
@@ -163,7 +161,7 @@ public class UserService implements IUserService, HasLogger {
 			serviceResponse.setOperationWasSuccessful(true);
 			if (cronJobReminderReportEntities != null && !cronJobReminderReportEntities.isEmpty()) {
 				serviceResponse.setBusinessObjects(cronJobReminderReportEntities);
-				log().debug("found: " + cronJobReminderReportEntities.size() + " users");
+				log().debug("found: {} users", cronJobReminderReportEntities.size());
 			} else {
 				log().debug("found: 0 users");
 				serviceResponse.setOperationWasSuccessful(true);

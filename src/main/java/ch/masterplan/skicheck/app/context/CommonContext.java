@@ -31,9 +31,9 @@ import java.util.Locale;
 /**
  * CommonContext class representing the context shared across the application threads.
  */
-public class CommonContext {
+public final class CommonContext {
 
-	private static final ThreadLocal<CommonContext> commonContext = ThreadLocal.withInitial(CommonContext::new);
+	private static final ThreadLocal<CommonContext> COMMON_CONTEXT = ThreadLocal.withInitial(CommonContext::new);
 	private Language language = Language.DE;
 
 	private CommonContext() {
@@ -46,7 +46,7 @@ public class CommonContext {
 	 * @return The CommonContext instance.
 	 */
 	public static CommonContext get() {
-		return commonContext.get();
+		return COMMON_CONTEXT.get();
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class CommonContext {
 	 * @param commonContext The CommonContext instance to set.
 	 */
 	public static void set(CommonContext commonContext) {
-		CommonContext.commonContext.set(commonContext);
+		CommonContext.COMMON_CONTEXT.set(commonContext);
 	}
 
 	/**
@@ -83,5 +83,12 @@ public class CommonContext {
 	 */
 	public void setLanguage(Language language) {
 		this.language = language;
+	}
+
+	/**
+	 * Removes the CommonContext from the current thread.
+	 */
+	public void remove() {
+		COMMON_CONTEXT.remove();
 	}
 }
