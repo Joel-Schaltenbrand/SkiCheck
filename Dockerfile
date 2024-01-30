@@ -8,5 +8,5 @@ RUN mvn -f /home/app/pom.xml clean package -Pproduction
 FROM eclipse-temurin:21
 LABEL org.opencontainers.image.source="https://github.com/joel-schaltenbrand/SkiCheck"
 COPY --from=build /home/app/target/skicheck.jar /usr/local/lib/skicheck.jar
-EXPOSE 8080
+EXPOSE 80
 ENTRYPOINT ["java", "-jar", "/usr/local/lib/skicheck.jar"]

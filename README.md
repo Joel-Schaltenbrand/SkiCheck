@@ -1,6 +1,7 @@
 # SkiCheck
 
-This is a simple application to check the status of the employees of a ski resort. This project is for learning purposes only. It belongs to the module M306 of
+This is a simple application to check the status of the employees of a ski resort. This project is for learning purposes
+only. It belongs to the module M306 of
 the [ICT Berufsbildung Schweiz.](https://www.modulbaukasten.ch/module/306/4/de-DE?title=Kleinprojekte-im-eigenen-Berufsumfeld-abwickeln)
 
 [![GitHub](https://img.shields.io/github/license/Joel-Schaltenbrand/SkiCheck?style=for-the-badge)](https://github.com/Joel-Schaltenbrand/SkiCheck/blob/master/LICENSE)

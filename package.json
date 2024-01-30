@@ -1,6 +1,6 @@
 {
-  "name": "no-name",
-  "license": "UNLICENSED",
+  "name": "ski-check",
+  "license": "MIT",
   "type": "module",
   "dependencies": {
     "@polymer/polymer": "3.5.1",
