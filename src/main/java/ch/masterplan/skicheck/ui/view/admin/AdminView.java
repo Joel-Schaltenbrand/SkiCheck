@@ -25,11 +25,15 @@
 package ch.masterplan.skicheck.ui.view.admin;
 
 import ch.masterplan.skicheck.app.configuration.ApplicationConfiguration;
+import ch.masterplan.skicheck.backend.service.IUserDetailService;
+import ch.masterplan.skicheck.backend.service.IUserService;
 import ch.masterplan.skicheck.backend.service.impl.LanguageService;
-import ch.masterplan.skicheck.backend.service.impl.UserService;
 import ch.masterplan.skicheck.backend.util.ServiceResponse;
+import ch.masterplan.skicheck.model.user.Equipment;
 import ch.masterplan.skicheck.model.user.Role;
 import ch.masterplan.skicheck.model.user.UserEntity;
+import ch.masterplan.skicheck.model.userdetail.UserDetailEntity;
+import ch.masterplan.skicheck.ui.util.INotifier;
 import ch.masterplan.skicheck.ui.util.Notifier;
 import ch.masterplan.skicheck.ui.view.MainLayout;
 import com.vaadin.flow.component.UI;
@@ -80,27 +84,31 @@ public class AdminView extends Div implements BeforeEnterObserver {
 	private final Button save = new Button();
 	private final Button delete = new Button();
 	private final BeanValidationBinder<UserEntity> binder;
-	private final UserService userService;
-	private final Notifier notifier;
+	private final BeanValidationBinder<UserDetailEntity> binderDetails;
+	private final IUserService userService;
+	private final IUserDetailService userDetailService;
+	private final INotifier notifier;
 	private TextField firstName;
 	private TextField lastName;
 	private TextField username;
 	private EmailField email;
-	private Checkbox hasEquipment;
+	private MultiSelectComboBox<Equipment> equipment;
 	private Checkbox hasPaid;
 	private MultiSelectComboBox<Role> roles;
 	private Button resetPassword;
 	private UserEntity userEntity;
+	private UserDetailEntity userDetailEntity;
 
 	/**
 	 * Constructs the admin view.
 	 *
 	 * @param userService UserService instance for managing user-related operations.
 	 */
-	public AdminView(LanguageService languageService, ApplicationConfiguration config, UserService userService, Notifier notifier) {
+	public AdminView(LanguageService languageService, ApplicationConfiguration config, IUserService userService, IUserDetailService userDetailService, Notifier notifier) {
 		this.languageService = languageService;
 		this.config = config;
 		this.userService = userService;
+		this.userDetailService = userDetailService;
 		this.notifier = notifier;
 		addClassNames("admin-view");
 
@@ -122,12 +130,15 @@ public class AdminView extends Div implements BeforeEnterObserver {
 				.bind(UserEntity::getUsername, UserEntity::setUsername);
 		binder.forField(email).asRequired(languageService.getMessage4Key("adminView.notification.email.required"))
 				.bind(UserEntity::getEmail, UserEntity::setEmail);
-		binder.forField(hasPaid).bind(UserEntity::isHasPaid, UserEntity::setHasPaid);
-		binder.forField(hasEquipment).bind(UserEntity::isHasEquipment, UserEntity::setHasEquipment);
 		binder.forField(roles).bind(UserEntity::getRoles, UserEntity::setRoles);
 
-		// Configure and style components
+		binderDetails = new BeanValidationBinder<>(UserDetailEntity.class);
+		binderDetails.bindInstanceFields(this);
+		binderDetails.forField(hasPaid).bind(UserDetailEntity::hasPaid, UserDetailEntity::setHasPaid);
+		binderDetails.forField(equipment).bind(UserDetailEntity::getEquipment, UserDetailEntity::setEquipment);
 
+
+		// Configure and style components
 		setButtonText();
 		setResetPasswordButton();
 		setCancelButton();
@@ -170,20 +181,13 @@ public class AdminView extends Div implements BeforeEnterObserver {
 		grid.addColumn("lastName").setAutoWidth(true);
 		grid.addColumn("username").setAutoWidth(true);
 		grid.addColumn("email").setAutoWidth(true);
+
 		LitRenderer<UserEntity> paid = LitRenderer.<UserEntity>
 						of("<vaadin-icon icon='vaadin:${item.icon}' style='width: var(--lumo-icon-size-s); "
 						+ "height: var(--lumo-icon-size-s); color: ${item.color};'></vaadin-icon>")
-				.withProperty("icon", pd -> pd.isHasPaid() ? "check" : "minus")
-				.withProperty("color", pd -> pd.isHasPaid() ? "var(--lumo-primary-text-color)" : "var(--lumo-disabled-text-color)");
+				.withProperty("icon", pd -> pd.getUserDetails().hasPaid() ? "check" : "minus")
+				.withProperty("color", pd -> pd.getUserDetails().hasPaid() ? "var(--lumo-primary-text-color)" : "var(--lumo-disabled-text-color)");
 		grid.addColumn(paid).setHeader(languageService.getMessage4Key("general.hasPaid")).setAutoWidth(true);
-
-		LitRenderer<UserEntity> equipment = LitRenderer.<UserEntity>
-						of("<vaadin-icon icon='vaadin:${item.icon}' style='width: var(--lumo-icon-size-s); "
-						+ "height: var(--lumo-icon-size-s); color: ${item.color};'></vaadin-icon>")
-				.withProperty("icon", eq -> eq.isHasEquipment() ? "check" : "minus")
-				.withProperty("color", eq -> eq.isHasEquipment() ? "var(--lumo-primary-text-color)" : "var(--lumo-disabled-text-color)");
-
-		grid.addColumn(equipment).setHeader(languageService.getMessage4Key("general.hasEquipment")).setAutoWidth(true);
 
 		grid.setItems(query ->
 				userService.list(PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query))).stream());
@@ -216,6 +220,13 @@ public class AdminView extends Div implements BeforeEnterObserver {
 					this.userEntity.setRoles(Collections.singleton(Role.USER));
 					isNewUser = true;
 				}
+				binderDetails.writeBean(this.userDetailEntity);
+				ServiceResponse<UserDetailEntity> responseDetails = userDetailService.save(this.userDetailEntity);
+				if (!responseDetails.getOperationWasSuccessful()) {
+					notifier.notifyError(responseDetails.getErrorMessage().getMessage());
+					return;
+				}
+				this.userEntity.setUserDetails(responseDetails.getBusinessObjects().getFirst());
 				binder.writeBean(this.userEntity);
 				ServiceResponse<UserEntity> response = userService.save(this.userEntity);
 				if (response.getOperationWasSuccessful()) {
@@ -237,7 +248,7 @@ public class AdminView extends Div implements BeforeEnterObserver {
 
 	private void setResetButton() {
 		resetPayment.addClickListener(e -> {
-			ServiceResponse<UserEntity> response = userService.resetAllPaymentStatus();
+			ServiceResponse<UserDetailEntity> response = userDetailService.resetAllPaymentStatus();
 			if (response.getOperationWasSuccessful()) {
 				notifier.notifySuccess(response.getInfoMessage().getMessage());
 			} else {
@@ -260,7 +271,7 @@ public class AdminView extends Div implements BeforeEnterObserver {
 		if (personId.isPresent()) {
 			ServiceResponse<UserEntity> response = userService.getById(personId.get());
 			if (response.getOperationWasSuccessful()) {
-				populateForm(response.getBusinessObjects().getFirst());
+				populateForm(response.getBusinessObjects().getFirst(), response.getBusinessObjects().getFirst().getUserDetails());
 			} else {
 				notifier.notifyError(languageService.getMessage4Key("adminView.notification.notfound", personId.get()));
 				refreshGrid();
@@ -285,12 +296,13 @@ public class AdminView extends Div implements BeforeEnterObserver {
 		username = new TextField(languageService.getMessage4Key("general.username"));
 		email = new EmailField(languageService.getMessage4Key("general.email"));
 		hasPaid = new Checkbox(languageService.getMessage4Key("general.hasPaid"));
-		hasEquipment = new Checkbox(languageService.getMessage4Key("general.hasEquipment"));
+		equipment = new MultiSelectComboBox<>(languageService.getMessage4Key("general.equipment"));
+		equipment.setItems(Equipment.values());
 		roles = new MultiSelectComboBox<>(languageService.getMessage4Key("general.roles"));
 		roles.setItems(Role.values());
 		resetPassword = new Button(languageService.getMessage4Key("general.resetPassword"));
 
-		formLayout.add(firstName, lastName, username, email, hasPaid, hasEquipment, roles, resetPassword);
+		formLayout.add(firstName, lastName, username, email, hasPaid, equipment, roles, resetPassword);
 
 		editorDiv.add(formLayout);
 		createButtonLayout(editorLayoutDiv);
@@ -322,12 +334,13 @@ public class AdminView extends Div implements BeforeEnterObserver {
 	}
 
 	private void clearForm() {
-		populateForm(null);
+		populateForm(null, null);
 	}
 
-	private void populateForm(UserEntity value) {
+	private void populateForm(UserEntity value, UserDetailEntity value2) {
 		this.userEntity = value;
+		this.userDetailEntity = value2;
 		binder.readBean(this.userEntity);
-
+		binderDetails.readBean(this.userDetailEntity);
 	}
 }

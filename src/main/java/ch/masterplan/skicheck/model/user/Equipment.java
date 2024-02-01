@@ -22,24 +22,11 @@
  * SOFTWARE.
  */
 
-package ch.masterplan.skicheck.backend.dao;
-
-import ch.masterplan.skicheck.model.user.UserEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.stereotype.Repository;
+package ch.masterplan.skicheck.model.user;
 
 /**
- * Spring Data JPA repository for performing CRUD operations on UserEntity entities.
+ * Enum representing the equipment of a user.
  */
-@Repository
-public interface UserRepository extends JpaRepository<UserEntity, Long>, JpaSpecificationExecutor<UserEntity> {
-
-	/**
-	 * Retrieves a user entity by its username.
-	 *
-	 * @param username The username of the user entity to retrieve.
-	 * @return The user entity with the specified username.
-	 */
-	UserEntity findByUsername(String username);
+public enum Equipment {
+	SKI, SNOWBOARD
 }

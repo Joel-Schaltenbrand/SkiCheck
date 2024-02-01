@@ -24,40 +24,16 @@
 
 package ch.masterplan.skicheck.backend.dao;
 
-import ch.masterplan.skicheck.model.user.UserEntity;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-
-import java.util.Optional;
+import ch.masterplan.skicheck.model.userdetail.UserDetailEntity;
 
 /**
- * Interface for Data Access Objects (DAO) handling CRUD operations for UserEntity entities.
+ * DAO interface for managing user details entities.
  */
-public interface IUserDAO extends IEntityCrudDAO<UserEntity> {
+public interface IUserDetailDAO extends IEntityCrudDAO<UserDetailEntity> {
 
 	/**
-	 * Retrieves a user entity by its ID.
-	 *
-	 * @param id The ID of the user entity to retrieve.
-	 * @return An Optional containing the user entity if found, otherwise an empty Optional.
+	 * Resets all payments.
 	 */
-	Optional<UserEntity> findById(Long id);
+	void resetAllPayments();
 
-	/**
-	 * Retrieves a page of user entities.
-	 *
-	 * @param pageable The Pageable object specifying the page and size.
-	 * @return A Page containing user entities.
-	 */
-	Page<UserEntity> findAll(Pageable pageable);
-
-	/**
-	 * Retrieves a filtered and paginated list of user entities.
-	 *
-	 * @param pageable The Pageable object specifying the page and size.
-	 * @param filter   The Specification object representing the filter criteria.
-	 * @return A Page containing filtered user entities.
-	 */
-	Page<UserEntity> findAll(Pageable pageable, Specification<UserEntity> filter);
 }

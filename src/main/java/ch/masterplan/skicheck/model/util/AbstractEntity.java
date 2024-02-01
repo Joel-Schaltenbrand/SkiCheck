@@ -22,24 +22,40 @@
  * SOFTWARE.
  */
 
-package ch.masterplan.skicheck.backend.dao;
+package ch.masterplan.skicheck.model.util;
 
-import ch.masterplan.skicheck.model.user.UserEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.stereotype.Repository;
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 
 /**
- * Spring Data JPA repository for performing CRUD operations on UserEntity entities.
+ * Abstract class providing an ID for entities.
  */
-@Repository
-public interface UserRepository extends JpaRepository<UserEntity, Long>, JpaSpecificationExecutor<UserEntity> {
+@MappedSuperclass
+public abstract class AbstractEntity {
+
+	@Id
+	@Column(name = "id", nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
 	/**
-	 * Retrieves a user entity by its username.
+	 * Retrieves the user's ID.
 	 *
-	 * @param username The username of the user entity to retrieve.
-	 * @return The user entity with the specified username.
+	 * @return The user's ID.
 	 */
-	UserEntity findByUsername(String username);
+	public Long getId() {
+		return id;
+	}
+
+	/**
+	 * Sets the user's ID.
+	 *
+	 * @param id The ID to be set.
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
 }

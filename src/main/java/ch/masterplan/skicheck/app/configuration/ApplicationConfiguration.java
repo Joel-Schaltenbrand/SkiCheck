@@ -27,6 +27,9 @@ package ch.masterplan.skicheck.app.configuration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+/**
+ * Configuration class for application-wide configuration.
+ */
 public class ApplicationConfiguration {
 
 	private final PasswordEncoder passwordEncoder;
@@ -34,14 +37,29 @@ public class ApplicationConfiguration {
 	@Value("${default.password}")
 	private String defaultPassword;
 
+	/**
+	 * Creates a new ApplicationConfiguration instance.
+	 *
+	 * @param passwordEncoder The PasswordEncoder bean.
+	 */
 	public ApplicationConfiguration(PasswordEncoder passwordEncoder) {
 		this.passwordEncoder = passwordEncoder;
 	}
 
+	/**
+	 * Retrieves the default password for new users.
+	 *
+	 * @return The default password for new users.
+	 */
 	public String getDefaultHashedPassword() {
 		return passwordEncoder.encode(defaultPassword);
 	}
 
+	/**
+	 * Retrieves the default password for new users.
+	 *
+	 * @return The default password for new users.
+	 */
 	public String getDefaultPassword() {
 		return defaultPassword;
 	}

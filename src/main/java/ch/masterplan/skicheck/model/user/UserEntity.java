@@ -24,7 +24,10 @@
 
 package ch.masterplan.skicheck.model.user;
 
+import ch.masterplan.skicheck.model.userdetail.UserDetailEntity;
+import ch.masterplan.skicheck.model.util.AbstractEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -32,10 +35,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 
@@ -46,12 +47,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "application_user")
-public class UserEntity {
-
-	@Id
-	@Column(name = "id", nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+public class UserEntity extends AbstractEntity {
 
 	@Column(name = "username", nullable = false, unique = true)
 	private String username;
@@ -66,12 +62,6 @@ public class UserEntity {
 	@Column(name = "email", nullable = false, unique = true)
 	private String email;
 
-	@Column(name = "has_equipment", nullable = false)
-	private boolean hasEquipment;
-
-	@Column(name = "has_paid", nullable = false)
-	private boolean hasPaid;
-
 	@JsonIgnore
 	@Column(name = "hashed_password", nullable = false)
 	private String hashedPassword;
@@ -81,6 +71,10 @@ public class UserEntity {
 	@CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
 	private Set<Role> roles;
 
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "user_details_id", referencedColumnName = "id")
+	private UserDetailEntity userDetails;
+
 	/**
 	 * Retrieves the full name of the user.
 	 *
@@ -88,24 +82,6 @@ public class UserEntity {
 	 */
 	public String getFullName() {
 		return firstName + " " + lastName;
-	}
-
-	/**
-	 * Retrieves the user's ID.
-	 *
-	 * @return The user's ID.
-	 */
-	public Long getId() {
-		return id;
-	}
-
-	/**
-	 * Sets the user's ID.
-	 *
-	 * @param id The ID to be set.
-	 */
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	/**
@@ -181,42 +157,6 @@ public class UserEntity {
 	}
 
 	/**
-	 * Checks if the user has equipment.
-	 *
-	 * @return true if the user has equipment, false otherwise.
-	 */
-	public boolean isHasEquipment() {
-		return hasEquipment;
-	}
-
-	/**
-	 * Sets whether the user has equipment.
-	 *
-	 * @param hasEquipment true if the user has equipment, false otherwise.
-	 */
-	public void setHasEquipment(boolean hasEquipment) {
-		this.hasEquipment = hasEquipment;
-	}
-
-	/**
-	 * Checks if the user has paid.
-	 *
-	 * @return true if the user has paid, false otherwise.
-	 */
-	public boolean isHasPaid() {
-		return hasPaid;
-	}
-
-	/**
-	 * Sets whether the user has paid.
-	 *
-	 * @param hasPaid true if the user has paid, false otherwise.
-	 */
-	public void setHasPaid(boolean hasPaid) {
-		this.hasPaid = hasPaid;
-	}
-
-	/**
 	 * Retrieves the hashed password of the user.
 	 *
 	 * @return The hashed password of the user.
@@ -250,5 +190,23 @@ public class UserEntity {
 	 */
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
+	}
+
+	/**
+	 * Retrieves the user details of the user.
+	 *
+	 * @return The user details of the user.
+	 */
+	public UserDetailEntity getUserDetails() {
+		return userDetails;
+	}
+
+	/**
+	 * Sets the user details of the user.
+	 *
+	 * @param userDetails The user details to be set.
+	 */
+	public void setUserDetails(UserDetailEntity userDetails) {
+		this.userDetails = userDetails;
 	}
 }
