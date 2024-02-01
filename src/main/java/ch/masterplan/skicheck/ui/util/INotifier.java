@@ -22,24 +22,38 @@
  * SOFTWARE.
  */
 
-package ch.masterplan.skicheck.backend.dao;
-
-import ch.masterplan.skicheck.model.user.UserEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.stereotype.Repository;
+package ch.masterplan.skicheck.ui.util;
 
 /**
- * Spring Data JPA repository for performing CRUD operations on UserEntity entities.
+ * Interface for notifying users about success, warnings, and errors.
  */
-@Repository
-public interface UserRepository extends JpaRepository<UserEntity, Long>, JpaSpecificationExecutor<UserEntity> {
+public interface INotifier {
 
 	/**
-	 * Retrieves a user entity by its username.
+	 * Notifies success with the provided HTML message.
 	 *
-	 * @param username The username of the user entity to retrieve.
-	 * @return The user entity with the specified username.
+	 * @param messageHtml The HTML message for success notification.
 	 */
-	UserEntity findByUsername(String username);
+	void notifySuccess(String messageHtml);
+
+	/**
+	 * Notifies success as a tray notification with the provided HTML message.
+	 *
+	 * @param messageHtml The HTML message for success tray notification.
+	 */
+	void notifySuccessAsTray(String messageHtml);
+
+	/**
+	 * Notifies a warning with the provided HTML message.
+	 *
+	 * @param messageHtml The HTML message for warning notification.
+	 */
+	void notifyWarning(String messageHtml);
+
+	/**
+	 * Notifies an error with the provided HTML message.
+	 *
+	 * @param messageHtml The HTML message for error notification.
+	 */
+	void notifyError(String messageHtml);
 }

@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Service class for managing user-related operations in the application.
+ * Implementation of the {@link IUserService} interface for managing user entities.
  */
 public class UserService implements IUserService, HasLogger {
 
@@ -57,12 +57,6 @@ public class UserService implements IUserService, HasLogger {
 		this.languageService = languageService;
 	}
 
-	/**
-	 * Saves a user in the system.
-	 *
-	 * @param entity The user to be saved.
-	 * @return ServiceResponse with the operation result and the saved user.
-	 */
 	@Override
 	public ServiceResponse<UserEntity> save(UserEntity entity) {
 		ServiceResponse<UserEntity> serviceResponse = getServiceResponse();
@@ -87,12 +81,6 @@ public class UserService implements IUserService, HasLogger {
 		return serviceResponse;
 	}
 
-	/**
-	 * Deletes a user from the system.
-	 *
-	 * @param entity The user to be deleted.
-	 * @return ServiceResponse with the operation result.
-	 */
 	@Override
 	public ServiceResponse<UserEntity> delete(UserEntity entity) {
 		ServiceResponse<UserEntity> serviceResponse = getServiceResponse();
@@ -109,12 +97,6 @@ public class UserService implements IUserService, HasLogger {
 		return serviceResponse;
 	}
 
-	/**
-	 * Retrieves a user by ID.
-	 *
-	 * @param id The ID of the user to be retrieved.
-	 * @return ServiceResponse with the operation result and the retrieved user.
-	 */
 	@Override
 	public ServiceResponse<UserEntity> getById(Long id) {
 		ServiceResponse<UserEntity> serviceResponse = getServiceResponse();
@@ -145,23 +127,18 @@ public class UserService implements IUserService, HasLogger {
 		return serviceResponse;
 	}
 
-	/**
-	 * Retrieves all users in the system.
-	 *
-	 * @return ServiceResponse with the operation result and a list of all users.
-	 */
 	@Override
 	public ServiceResponse<UserEntity> getAll() {
 		ServiceResponse<UserEntity> serviceResponse = getServiceResponse();
-		List<UserEntity> cronJobReminderReportEntities;
+		List<UserEntity> userEntities;
 
 		log().debug("all user from database requested: ");
 		try {
-			cronJobReminderReportEntities = dao.findAll();
+			userEntities = dao.findAll();
 			serviceResponse.setOperationWasSuccessful(true);
-			if (cronJobReminderReportEntities != null && !cronJobReminderReportEntities.isEmpty()) {
-				serviceResponse.setBusinessObjects(cronJobReminderReportEntities);
-				log().debug("found: {} users", cronJobReminderReportEntities.size());
+			if (userEntities != null && !userEntities.isEmpty()) {
+				serviceResponse.setBusinessObjects(userEntities);
+				log().debug("found: {} users", userEntities.size());
 			} else {
 				log().debug("found: 0 users");
 				serviceResponse.setOperationWasSuccessful(true);
@@ -176,49 +153,15 @@ public class UserService implements IUserService, HasLogger {
 		return serviceResponse;
 	}
 
-	/**
-	 * Retrieves a page of users.
-	 *
-	 * @param pageable Pagination information.
-	 * @return A page of users.
-	 */
 	@Override
 	public Page<UserEntity> list(Pageable pageable) {
 		log().debug("Returning user entities for page: {}", pageable);
 		return dao.findAll(pageable);
 	}
 
-	/**
-	 * Retrieves a page of users considering a filter.
-	 *
-	 * @param pageable Pagination information.
-	 * @param filter   The filter for user search.
-	 * @return A page of users based on the specified filter.
-	 */
 	@Override
 	public Page<UserEntity> list(Pageable pageable, Specification<UserEntity> filter) {
 		log().debug("Returning user entities for page: {} with filter: {}", pageable, filter);
 		return dao.findAll(pageable, filter);
-	}
-
-	/**
-	 * Resets the payment status of all users in the system.
-	 *
-	 * @return ServiceResponse with the operation result.
-	 */
-	@Override
-	public ServiceResponse<UserEntity> resetAllPaymentStatus() {
-		ServiceResponse<UserEntity> serviceResponse = getServiceResponse();
-		try {
-			log().debug("resetting all payment status");
-			dao.resetAllPaymentStatus();
-			serviceResponse.setOperationWasSuccessful(true);
-			serviceResponse.setInfoMessage(new ServiceMessage(languageService.getMessage4Key("userService.message.paymentStatusReset")));
-		} catch (DataAccessException ex) {
-			log().error(ex.getMessage());
-			serviceResponse.setErrorMessage(new ServiceMessage(languageService.getMessage4Key("userService.message.paymentStatusResetError")));
-			serviceResponse.setOperationWasSuccessful(false);
-		}
-		return serviceResponse;
 	}
 }

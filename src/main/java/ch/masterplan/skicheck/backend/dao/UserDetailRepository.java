@@ -24,22 +24,23 @@
 
 package ch.masterplan.skicheck.backend.dao;
 
-import ch.masterplan.skicheck.model.user.UserEntity;
+import ch.masterplan.skicheck.model.userdetail.UserDetailEntity;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data JPA repository for performing CRUD operations on UserEntity entities.
+ * Repository interface for managing user details entities.
  */
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity, Long>, JpaSpecificationExecutor<UserEntity> {
+public interface UserDetailRepository extends JpaRepository<UserDetailEntity, Long>, JpaSpecificationExecutor<UserDetailEntity> {
 
-	/**
-	 * Retrieves a user entity by its username.
-	 *
-	 * @param username The username of the user entity to retrieve.
-	 * @return The user entity with the specified username.
-	 */
-	UserEntity findByUsername(String username);
+	@Modifying
+	@Transactional
+	@Query("update UserDetailEntity u SET u.hasPaid = false WHERE u.hasPaid = true")
+	void resetAllPayments();
+
 }

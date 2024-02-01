@@ -34,8 +34,9 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
-public class Notifier {
+public class Notifier implements INotifier {
 
+	@Override
 	public void notifySuccess(String messageHtml) {
 		Notification notification = new Notification();
 		notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
@@ -48,6 +49,7 @@ public class Notifier {
 		notification.open();
 	}
 
+	@Override
 	public void notifySuccessAsTray(String messageHtml) {
 		Notification notification = new Notification();
 		notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
@@ -61,6 +63,7 @@ public class Notifier {
 		notification.open();
 	}
 
+	@Override
 	public void notifyWarning(String messageHtml) {
 		Notification notification = new Notification();
 		notification.addThemeVariants(NotificationVariant.LUMO_WARNING);
@@ -72,6 +75,7 @@ public class Notifier {
 		notification.open();
 	}
 
+	@Override
 	public void notifyError(String messageHtml) {
 		Notification notification = new Notification();
 		notification.addThemeVariants(NotificationVariant.LUMO_ERROR);

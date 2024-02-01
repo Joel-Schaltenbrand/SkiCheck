@@ -26,9 +26,13 @@ package ch.masterplan.skicheck.app.configuration;
 
 import ch.masterplan.skicheck.app.security.AuthenticatedUser;
 import ch.masterplan.skicheck.app.security.UserDetailsServiceImpl;
+import ch.masterplan.skicheck.backend.dao.IUserDAO;
+import ch.masterplan.skicheck.backend.dao.UserDetailRepository;
 import ch.masterplan.skicheck.backend.dao.UserRepository;
 import ch.masterplan.skicheck.backend.dao.impl.UserDAO;
+import ch.masterplan.skicheck.backend.dao.impl.UserDetailDAO;
 import ch.masterplan.skicheck.backend.service.impl.LanguageService;
+import ch.masterplan.skicheck.backend.service.impl.UserDetailService;
 import ch.masterplan.skicheck.backend.service.impl.UserService;
 import ch.masterplan.skicheck.ui.util.Notifier;
 import com.vaadin.flow.spring.security.AuthenticationContext;
@@ -46,7 +50,6 @@ public class BeanConfiguration implements HasLogger {
 	/**
 	 * Configures and provides the Notifier bean for displaying notifications.
 	 *
-	 * @param languageService The LanguageService bean.
 	 * @return The initialized Notifier bean.
 	 */
 	@Bean
@@ -103,9 +106,21 @@ public class BeanConfiguration implements HasLogger {
 	 */
 	@Bean
 	@ConditionalOnMissingBean
-	public UserService userService(final UserDAO userDAO, final LanguageService languageService) {
+	public UserService userService(final IUserDAO userDAO, final LanguageService languageService) {
 		log().info("initializing user service bean");
 		return new UserService(userDAO, languageService);
+	}
+
+	/**
+	 * Configures and provides the UserDetailService bean for managing user detail entities.
+	 *
+	 * @return The initialized UserDetailService bean.
+	 */
+	@Bean
+	@ConditionalOnMissingBean
+	public UserDetailService userDetailService(final UserDetailDAO userDetailDAO, final LanguageService languageService) {
+		log().info("initializing user detail service bean");
+		return new UserDetailService(userDetailDAO, languageService);
 	}
 
 	/**
@@ -132,6 +147,19 @@ public class BeanConfiguration implements HasLogger {
 	public UserDAO userDAO(final UserRepository userRepository) {
 		log().info("initializing user dao bean");
 		return new UserDAO(userRepository);
+	}
+
+	/**
+	 * Configures and provides the UserDetailDAO bean for interacting with user detail data.
+	 *
+	 * @param userDetailRepository The UserDetailRepository bean.
+	 * @return The initialized UserDetailDAO bean.
+	 */
+	@Bean
+	@ConditionalOnMissingBean
+	public UserDetailDAO userDetailDAO(final UserDetailRepository userDetailRepository) {
+		log().info("initializing user detail dao bean");
+		return new UserDetailDAO(userDetailRepository);
 	}
 
 	/**

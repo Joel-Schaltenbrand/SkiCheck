@@ -22,24 +22,19 @@
  * SOFTWARE.
  */
 
-package ch.masterplan.skicheck.backend.dao;
+package ch.masterplan.skicheck.backend.service;
 
-import ch.masterplan.skicheck.model.user.UserEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.stereotype.Repository;
+import ch.masterplan.skicheck.backend.util.ServiceResponse;
+import ch.masterplan.skicheck.model.userdetail.UserDetailEntity;
 
 /**
- * Spring Data JPA repository for performing CRUD operations on UserEntity entities.
+ * Service interface for managing user details entities.
  */
-@Repository
-public interface UserRepository extends JpaRepository<UserEntity, Long>, JpaSpecificationExecutor<UserEntity> {
+public interface IUserDetailService extends IService<UserDetailEntity> {
 
 	/**
-	 * Retrieves a user entity by its username.
-	 *
-	 * @param username The username of the user entity to retrieve.
-	 * @return The user entity with the specified username.
+	 * Resets the payment status for all users.
 	 */
-	UserEntity findByUsername(String username);
+	ServiceResponse<UserDetailEntity> resetAllPaymentStatus();
+
 }

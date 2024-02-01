@@ -73,6 +73,13 @@ public class MainLayout extends AppLayout implements HasLogger {
 	private final LanguageService languageService;
 	private H2 viewTitle;
 
+	/**
+	 * Creates a new main layout.
+	 *
+	 * @param authenticatedUser The authenticated user.
+	 * @param accessChecker     The access checker.
+	 * @param languageService   The language service.
+	 */
 	public MainLayout(AuthenticatedUser authenticatedUser, AccessAnnotationChecker accessChecker, LanguageService languageService) {
 		this.authenticatedUser = authenticatedUser;
 		this.accessChecker = accessChecker;

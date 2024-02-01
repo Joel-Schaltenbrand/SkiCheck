@@ -24,7 +24,6 @@
 
 package ch.masterplan.skicheck.backend.service;
 
-import ch.masterplan.skicheck.backend.util.ServiceResponse;
 import ch.masterplan.skicheck.model.user.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,11 +33,6 @@ import org.springframework.data.jpa.domain.Specification;
  * Service interface for managing user entities.
  */
 public interface IUserService extends IService<UserEntity> {
-
-	/**
-	 * Resets the payment status for all users.
-	 */
-	ServiceResponse<UserEntity> resetAllPaymentStatus();
 
 	/**
 	 * Retrieves a page of user entities based on the provided Pageable.

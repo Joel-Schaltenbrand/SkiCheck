@@ -64,7 +64,7 @@ public class UserDetailsServiceImpl implements UserDetailsService, HasLogger {
 	 * Loads user details by the provided username.
 	 *
 	 * @param username The username to load details for.
-	 * @return The UserDetails object for the specified user.
+	 * @return The userdetail object for the specified user.
 	 * @throws UsernameNotFoundException If no user with the given username is found.
 	 */
 	@Override

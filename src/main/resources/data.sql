@@ -22,14 +22,22 @@
  * SOFTWARE.
  */
 
-INSERT INTO `application_user` (`id`, `email`, `first_name`, `has_equipment`, `has_paid`, `hashed_password`,
-                                `last_name`, `username`)
-VALUES (1, 'r.zaugg@bbzbl-it.ch', 'Roger', b'1', b'1', '$2a$12$22OtCV2pI0t1jOzrZKlt3uWhLjcz..brQv1Vdo1bh7EWPzZlaMzeu',
-        'Zaugg', 'roger.zaugg'),
-       (2, 'joel.schaltenbrand@bbzbl-it.ch', 'Joel', b'1', b'1',
-        '$2a$12$Ny1BLWIyQH8F4JvP5dAA9uvzPUT7X78L8RKFi/VEQeqXe5k73isBK', 'Schaltenbrand',
-        'joel.schaltenbrand');
+INSERT INTO `user_details` (`id`, `has_paid`)
+VALUES (1, b'1'),
+       (2, b'1');
+
+INSERT INTO `application_user` (`id`, `email`, `first_name`, `last_name`, `username`, `hashed_password`,
+                                `user_details_id`)
+VALUES (1, 'r.zaugg@bbzbl-it.ch', 'Roger', 'Zaugg', 'roger.zaugg',
+        '$2a$12$22OtCV2pI0t1jOzrZKlt3uWhLjcz..brQv1Vdo1bh7EWPzZlaMzeu', 1),
+       (2, 'joel.schaltenbrand@bbzbl-it.ch', 'Joel', 'Schaltenbrand', 'joel.schaltenbrand',
+        '$2a$12$Ny1BLWIyQH8F4JvP5dAA9uvzPUT7X78L8RKFi/VEQeqXe5k73isBK', 2);
+
 INSERT INTO `user_roles` (`user_id`, `roles`)
-VALUES ('1', 'ADMIN'),
-       ('1', 'USER'),
-       ('2', 'USER');
+VALUES (1, 'ADMIN'),
+       (1, 'USER'),
+       (2, 'USER');
+
+INSERT INTO `user_equipment` (`user_id`, `equipment`)
+VALUES (1, 'SKI'),
+       (2, 'SNOWBOARD');
