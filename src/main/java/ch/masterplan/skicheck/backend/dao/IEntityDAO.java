@@ -27,6 +27,7 @@ package ch.masterplan.skicheck.backend.dao;
 import org.springframework.dao.DataAccessException;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Generic interface for Data Access Objects (DAO) performing basic entity retrieval operations.
@@ -42,4 +43,13 @@ public interface IEntityDAO<T> {
 	 * @throws DataAccessException If an error occurs while retrieving entities.
 	 */
 	List<T> findAll() throws DataAccessException;
+
+	/**
+	 * Retrieves the entity with the specified id.
+	 *
+	 * @param id The id of the entity to be retrieved.
+	 * @return The entity with the specified id.
+	 * @throws DataAccessException If an error occurs while retrieving the entity.
+	 */
+	Optional<T> findById(Long id) throws DataAccessException;
 }

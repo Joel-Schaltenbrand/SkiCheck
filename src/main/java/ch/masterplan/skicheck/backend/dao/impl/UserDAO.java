@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Data Access Object (DAO) implementation for CRUD operations on UserEntity entities.
+ * Implementation of the {@link IUserDAO} interface for managing user entities.
  */
 @Component
 public class UserDAO implements IUserDAO, HasLogger {
@@ -54,12 +54,6 @@ public class UserDAO implements IUserDAO, HasLogger {
 		this.repository = repository;
 	}
 
-	/**
-	 * Deletes the specified user entity.
-	 *
-	 * @param entity The user entity to be deleted.
-	 * @throws DataAccessException If an error occurs while deleting the user entity.
-	 */
 	@Override
 	public void delete(UserEntity entity) throws DataAccessException {
 		long startTime = System.nanoTime();
@@ -68,13 +62,6 @@ public class UserDAO implements IUserDAO, HasLogger {
 		log().debug("Deleting {} took {} milliseconds", entity, (endTime - startTime) / 1000000);
 	}
 
-	/**
-	 * Saves or updates the specified user entity.
-	 *
-	 * @param entity The user entity to be saved or updated.
-	 * @return The saved or updated user entity.
-	 * @throws DataAccessException If an error occurs while saving or updating the user entity.
-	 */
 	@Override
 	public UserEntity save(UserEntity entity) throws DataAccessException {
 		long startTime = System.nanoTime();
@@ -84,13 +71,6 @@ public class UserDAO implements IUserDAO, HasLogger {
 		return userEntity;
 	}
 
-	/**
-	 * Retrieves a user entity by its ID.
-	 *
-	 * @param id The ID of the user entity to retrieve.
-	 * @return An Optional containing the user entity if found, otherwise an empty Optional.
-	 * @throws DataAccessException If an error occurs while retrieving the user entity.
-	 */
 	@Override
 	public Optional<UserEntity> findById(Long id) throws DataAccessException {
 		long startTime = System.nanoTime();
@@ -100,12 +80,6 @@ public class UserDAO implements IUserDAO, HasLogger {
 		return userEntity;
 	}
 
-	/**
-	 * Retrieves a list of all user entities.
-	 *
-	 * @return A list containing all user entities.
-	 * @throws DataAccessException If an error occurs while retrieving user entities.
-	 */
 	@Override
 	public List<UserEntity> findAll() throws DataAccessException {
 		long startTime = System.nanoTime();
@@ -115,12 +89,6 @@ public class UserDAO implements IUserDAO, HasLogger {
 		return userEntities;
 	}
 
-	/**
-	 * Retrieves a page of user entities.
-	 *
-	 * @param pageable The Pageable object specifying the page and size.
-	 * @return A Page containing user entities.
-	 */
 	@Override
 	public Page<UserEntity> findAll(Pageable pageable) {
 		long startTime = System.nanoTime();
@@ -130,13 +98,6 @@ public class UserDAO implements IUserDAO, HasLogger {
 		return userEntities;
 	}
 
-	/**
-	 * Retrieves a filtered and paginated list of user entities.
-	 *
-	 * @param pageable The Pageable object specifying the page and size.
-	 * @param filter   The Specification object representing the filter criteria.
-	 * @return A Page containing filtered user entities.
-	 */
 	@Override
 	public Page<UserEntity> findAll(Pageable pageable, Specification<UserEntity> filter) {
 		long startTime = System.nanoTime();
@@ -144,16 +105,5 @@ public class UserDAO implements IUserDAO, HasLogger {
 		long endTime = System.nanoTime();
 		log().debug("Getting all user objects via findAll with filter took {} milliseconds", (endTime - startTime) / 1000000);
 		return userEntities;
-	}
-
-	/**
-	 * Resets the payment status of all users.
-	 */
-	@Override
-	public void resetAllPaymentStatus() {
-		long startTime = System.nanoTime();
-		repository.resetAllPaymentStatus();
-		long endTime = System.nanoTime();
-		log().debug("Resetting all payment status took {} milliseconds", (endTime - startTime) / 1000000);
 	}
 }
