@@ -46,14 +46,16 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
@@ -64,6 +66,7 @@ import org.springframework.data.domain.PageRequest;
 
 import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * View for the admin page.
@@ -177,17 +180,24 @@ public class AdminView extends Div implements BeforeEnterObserver {
 	}
 
 	private void configGrid() {
-		grid.addColumn("firstName").setAutoWidth(true);
-		grid.addColumn("lastName").setAutoWidth(true);
-		grid.addColumn("username").setAutoWidth(true);
-		grid.addColumn("email").setAutoWidth(true);
+		grid.addColumn("firstName").setAutoWidth(true).setHeader(languageService.getMessage4Key("general.firstname"));
+		grid.addColumn("lastName").setAutoWidth(true).setHeader(languageService.getMessage4Key("general.lastName"));
+		grid.addColumn("username").setAutoWidth(true).setHeader(languageService.getMessage4Key("general.username"));
+		grid.addColumn("email").setAutoWidth(true).setHeader(languageService.getMessage4Key("general.email"));
+		grid.addComponentColumn(user -> createStatusIcon(user.getUserDetails().hasPaid())).setHeader(languageService.getMessage4Key("general.hasPaid")).setAutoWidth(true);
 
-		LitRenderer<UserEntity> paid = LitRenderer.<UserEntity>
-						of("<vaadin-icon icon='vaadin:${item.icon}' style='width: var(--lumo-icon-size-s); "
-						+ "height: var(--lumo-icon-size-s); color: ${item.color};'></vaadin-icon>")
-				.withProperty("icon", pd -> pd.getUserDetails().hasPaid() ? "check" : "minus")
-				.withProperty("color", pd -> pd.getUserDetails().hasPaid() ? "var(--lumo-primary-text-color)" : "var(--lumo-disabled-text-color)");
-		grid.addColumn(paid).setHeader(languageService.getMessage4Key("general.hasPaid")).setAutoWidth(true);
+		grid.addComponentColumn(user -> {
+			Set<Equipment> eqSet = user.getUserDetails().getEquipment();
+
+			VerticalLayout enumLayout = new VerticalLayout();
+
+			for (Equipment enumValue : eqSet) {
+				Span enumSpan = new Span(enumValue.toString());
+				enumSpan.getElement().getThemeList().add("badge primary pill");
+				enumLayout.add(enumSpan);
+			}
+			return enumLayout;
+		}).setHeader(languageService.getMessage4Key("general.equipment")).setAutoWidth(true);
 
 		grid.setItems(query ->
 				userService.list(PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query))).stream());
@@ -201,6 +211,19 @@ public class AdminView extends Div implements BeforeEnterObserver {
 				UI.getCurrent().navigate(AdminView.class);
 			}
 		});
+	}
+
+	private Icon createStatusIcon(boolean status) {
+		Icon icon;
+		if (status) {
+			icon = VaadinIcon.CHECK.create();
+			icon.getElement().getThemeList().add("badge success");
+		} else {
+			icon = VaadinIcon.CLOSE_SMALL.create();
+			icon.getElement().getThemeList().add("badge error");
+		}
+		icon.getStyle().set("padding", "var(--lumo-space-xs");
+		return icon;
 	}
 
 	private void setButtonText() {
