@@ -34,7 +34,7 @@
     <version>0.0.2</version>
     <properties>
         <java.version>21</java.version>
-        <vaadin.version>24.3.6</vaadin.version>
+        <vaadin.version>24.3.7</vaadin.version>
     </properties>
 
     <parent>
@@ -128,10 +128,20 @@
 
     <profiles>
         <profile>
-            <!-- Production mode is activated using -Pproduction -->
+            <id>dev</id>
+            <properties>
+                <activatedProperties>DEV</activatedProperties>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
             <id>production</id>
+            <properties>
+                <activatedProperties>PRD</activatedProperties>
+            </properties>
             <dependencies>
-                <!-- Exclude development dependencies from production -->
                 <dependency>
                     <groupId>com.vaadin</groupId>
                     <artifactId>vaadin-core</artifactId>
