@@ -128,7 +128,7 @@
 
     <profiles>
         <profile>
-            <id>dev</id>
+            <id>DEV</id>
             <properties>
                 <activatedProperties>DEV</activatedProperties>
             </properties>
