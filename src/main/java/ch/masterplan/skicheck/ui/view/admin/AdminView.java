@@ -181,7 +181,7 @@ public class AdminView extends Div implements BeforeEnterObserver {
 
 	private void configGrid() {
 		grid.addColumn("firstName").setAutoWidth(true).setHeader(languageService.getMessage4Key("general.firstname"));
-		grid.addColumn("lastName").setAutoWidth(true).setHeader(languageService.getMessage4Key("general.lastName"));
+		grid.addColumn("lastName").setAutoWidth(true).setHeader(languageService.getMessage4Key("general.lastname"));
 		grid.addColumn("username").setAutoWidth(true).setHeader(languageService.getMessage4Key("general.username"));
 		grid.addColumn("email").setAutoWidth(true).setHeader(languageService.getMessage4Key("general.email"));
 		grid.addComponentColumn(user -> createStatusIcon(user.getUserDetails().hasPaid())).setHeader(languageService.getMessage4Key("general.hasPaid")).setAutoWidth(true);
@@ -315,7 +315,7 @@ public class AdminView extends Div implements BeforeEnterObserver {
 
 		FormLayout formLayout = new FormLayout();
 		firstName = new TextField(languageService.getMessage4Key("general.firstname"));
-		lastName = new TextField(languageService.getMessage4Key("general.lastName"));
+		lastName = new TextField(languageService.getMessage4Key("general.lastname"));
 		username = new TextField(languageService.getMessage4Key("general.username"));
 		email = new EmailField(languageService.getMessage4Key("general.email"));
 		hasPaid = new Checkbox(languageService.getMessage4Key("general.hasPaid"));

@@ -26,8 +26,12 @@ package ch.masterplan.skicheck.ui.view.login;
 
 import ch.masterplan.skicheck.app.security.AuthenticatedUser;
 import ch.masterplan.skicheck.backend.service.impl.LanguageService;
+import ch.masterplan.skicheck.ui.view.MainLayout;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.login.LoginOverlay;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
@@ -41,8 +45,8 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
  */
 @AnonymousAllowed
 @PageTitle("Login")
-@Route(value = "login")
-public class LoginView extends LoginOverlay implements BeforeEnterObserver {
+@Route(value = "login", layout = MainLayout.class)
+public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
 	private final AuthenticatedUser authenticatedUser;
 	private final LanguageService languageService;
@@ -56,16 +60,17 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
 		this.authenticatedUser = authenticatedUser;
 		this.languageService = languageService;
 
-		setAction(RouteUtil.getRoutePath(VaadinService.getCurrent().getContext(), getClass()));
+		LoginForm login = new LoginForm();
 
-		setI18n(generateI18n());
+		login.setAction(RouteUtil.getRoutePath(VaadinService.getCurrent().getContext(), getClass()));
 
-		addForgotPasswordListener(e -> {
-			setOpened(false);
-			getUI().ifPresent(ui -> ui.navigate("register"));
-		});
-		setForgotPasswordButtonVisible(true);
-		setOpened(true);
+		login.setI18n(generateI18n());
+
+		login.addForgotPasswordListener(e -> UI.getCurrent().navigate("register"));
+		login.setForgotPasswordButtonVisible(true);
+		setHorizontalComponentAlignment(Alignment.CENTER, login);
+
+		add(login);
 	}
 
 	private LoginI18n generateI18n() {
@@ -77,10 +82,10 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
 
 		LoginI18n.Form i18nForm = i18n.getForm();
 		i18nForm.setTitle(languageService.getMessage4Key("general.title"));
-		i18nForm.setUsername(languageService.getMessage4Key("login.username"));
-		i18nForm.setPassword(languageService.getMessage4Key("login.password"));
+		i18nForm.setUsername(languageService.getMessage4Key("general.username"));
+		i18nForm.setPassword(languageService.getMessage4Key("general.password"));
 		i18nForm.setSubmit(languageService.getMessage4Key("login.submit"));
-		i18nForm.setForgotPassword(languageService.getMessage4Key("login.register"));
+		i18nForm.setForgotPassword(languageService.getMessage4Key("general.register"));
 		i18n.setForm(i18nForm);
 
 		LoginI18n.ErrorMessage i18nErrorMessage = i18n.getErrorMessage();
@@ -94,10 +99,7 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
 	@Override
 	public void beforeEnter(BeforeEnterEvent event) {
 		if (authenticatedUser.get().isPresent()) {
-			setOpened(false);
 			event.forwardTo("");
 		}
-
-		setError(event.getLocation().getQueryParameters().getParameters().containsKey("error"));
 	}
 }

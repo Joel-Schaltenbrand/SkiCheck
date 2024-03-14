@@ -209,7 +209,8 @@ public class MainLayout extends AppLayout implements HasLogger {
 			footerLayout.add(userMenu);
 		} else {
 			Anchor loginLink = new Anchor("login", languageService.getMessage4Key("general.login"));
-			footerLayout.add(loginLink);
+			Anchor registerLink = new Anchor("register", languageService.getMessage4Key("general.register"));
+			footerLayout.add(loginLink, registerLink);
 		}
 		footerLayout.add(generateLanguage());
 		layout.add(footerLayout);
