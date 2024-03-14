@@ -128,7 +128,7 @@
 
     <profiles>
         <profile>
-            <id>dev</id>
+            <id>DEV</id>
             <properties>
                 <spring.activatedProperties>dev</spring.activatedProperties>
                 <vaadin.productionMode>false</vaadin.productionMode>
