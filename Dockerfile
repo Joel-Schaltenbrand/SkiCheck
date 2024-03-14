@@ -2,7 +2,7 @@ FROM maven:3-eclipse-temurin-21 AS build
 COPY src /home/app/src
 COPY frontend /home/app/frontend
 COPY pom.xml /home/app
-COPY .git /home/app/.gigit ad.t
+COPY .git /home/app/.git
 RUN mvn -f /home/app/pom.xml clean package -P prd
 
 FROM eclipse-temurin:21
