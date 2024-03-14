@@ -130,16 +130,18 @@
         <profile>
             <id>dev</id>
             <properties>
-                <activatedProperties>DEV</activatedProperties>
+                <spring.activatedProperties>dev</spring.activatedProperties>
+                <vaadin.productionMode>false</vaadin.productionMode>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
         </profile>
         <profile>
-            <id>production</id>
+            <id>prd</id>
             <properties>
-                <activatedProperties>PRD</activatedProperties>
+                <spring.activatedProperties>prd</spring.activatedProperties>
+                <vaadin.productionMode>true</vaadin.productionMode>
             </properties>
             <dependencies>
                 <dependency>
