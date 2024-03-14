@@ -137,7 +137,7 @@
             </activation>
         </profile>
         <profile>
-            <id>production</id>
+            <id>PRD</id>
             <properties>
                 <activatedProperties>PRD</activatedProperties>
             </properties>
