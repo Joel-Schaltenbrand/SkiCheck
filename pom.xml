@@ -128,7 +128,7 @@
 
     <profiles>
         <profile>
-            <id>dev</id>
+            <id>DEV</id>
             <properties>
                 <activatedProperties>DEV</activatedProperties>
             </properties>
@@ -137,7 +137,7 @@
             </activation>
         </profile>
         <profile>
-            <id>production</id>
+            <id>PRD</id>
             <properties>
                 <activatedProperties>PRD</activatedProperties>
             </properties>
