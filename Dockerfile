@@ -3,7 +3,7 @@ COPY src /home/app/src
 COPY frontend /home/app/frontend
 COPY pom.xml /home/app
 COPY .git /home/app/.git
-RUN mvn -f /home/app/pom.xml clean package -P PRD
+RUN mvn -f /home/app/pom.xml clean package -P prd
 
 FROM eclipse-temurin:21
 LABEL org.opencontainers.image.source="https://github.com/joel-schaltenbrand/SkiCheck"
