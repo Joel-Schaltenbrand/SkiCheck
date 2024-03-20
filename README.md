@@ -1,4 +1,5 @@
 # SkiCheck
+[![CodeFactor](https://www.codefactor.io/repository/github/joel-schaltenbrand/skicheck/badge)](https://www.codefactor.io/repository/github/joel-schaltenbrand/skicheck)
 
 This is a simple application to check the status of the employees of a ski resort. This project is for learning purposes
 only. It belongs to the module M306 of
