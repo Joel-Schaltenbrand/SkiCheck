@@ -39,6 +39,13 @@ public class RegisterView extends VerticalLayout {
 	private final Binder<UserEntity> userBinder = new Binder<>(UserEntity.class);
 	private final Binder<UserDetailEntity> userDetailBinder = new Binder<>(UserDetailEntity.class);
 
+	/**
+	 * Constructs the register view.
+	 *
+	 * @param userService     The user service.
+	 * @param notifier        The notifier.
+	 * @param languageService The language service.
+	 **/
 	public RegisterView(UserService userService, Notifier notifier, LanguageService languageService) {
 		this.userService = userService;
 		this.notifier = notifier;
