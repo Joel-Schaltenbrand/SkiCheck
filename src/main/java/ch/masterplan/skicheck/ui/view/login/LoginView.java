@@ -30,7 +30,6 @@ import ch.masterplan.skicheck.ui.view.MainLayout;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.login.LoginI18n;
-import com.vaadin.flow.component.login.LoginOverlay;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -55,6 +54,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 	 * Constructs the login view.
 	 *
 	 * @param authenticatedUser AuthenticatedUser instance for user authentication.
+  	 * @param languageService   LanguageService instance for retrieving language-related content.
 	 */
 	public LoginView(AuthenticatedUser authenticatedUser, LanguageService languageService) {
 		this.authenticatedUser = authenticatedUser;
