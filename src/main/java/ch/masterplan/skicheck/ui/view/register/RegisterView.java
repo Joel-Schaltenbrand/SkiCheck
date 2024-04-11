@@ -49,17 +49,18 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.io.Serial;
 import java.util.Collections;
 
 @Route(value = "register", layout = MainLayout.class)
 @AnonymousAllowed
 @PageTitle("Register")
 public class RegisterView extends VerticalLayout {
-
-	private final UserService userService;
-	private final Notifier notifier;
-	private final LanguageService languageService;
-
+	@Serial
+	private static final long serialVersionUID = 646946546984L;
+	private final transient UserService userService;
+	private final transient Notifier notifier;
+	private final transient LanguageService languageService;
 	private final Binder<UserEntity> userBinder = new Binder<>(UserEntity.class);
 	private final Binder<UserDetailEntity> userDetailBinder = new Binder<>(UserDetailEntity.class);
 
@@ -94,9 +95,12 @@ public class RegisterView extends VerticalLayout {
 				.bind(UserEntity::getFirstName, UserEntity::setFirstName);
 		userBinder.forField(lastName).asRequired(languageService.getMessage4Key("error.lastnameRequired"))
 				.bind(UserEntity::getLastName, UserEntity::setLastName);
-		userBinder.forField(email).asRequired(languageService.getMessage4Key("error.emailRequired")).withValidator(new EmailValidator(languageService.getMessage4Key("error.emailInvalid")))
+		userBinder.forField(email).asRequired(languageService.getMessage4Key("error.emailRequired"))
+				.withValidator(new EmailValidator(languageService.getMessage4Key("error.emailInvalid")))
 				.bind(UserEntity::getEmail, UserEntity::setEmail);
-		userBinder.forField(password).asRequired(languageService.getMessage4Key("error.passwordRequired")).bind(UserEntity::getHashedPassword, (user, passwordValue) -> user.setHashedPassword(new BCryptPasswordEncoder().encode(passwordValue)));
+		userBinder.forField(password).asRequired(languageService.getMessage4Key("error.passwordRequired"))
+				.bind(UserEntity::getHashedPassword, (user, passwordValue) -> user
+						.setHashedPassword(new BCryptPasswordEncoder().encode(passwordValue)));
 		userDetailBinder.forField(equipment).bind(UserDetailEntity::getEquipment, UserDetailEntity::setEquipment);
 
 		FormLayout formLayout = new FormLayout();

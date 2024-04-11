@@ -30,11 +30,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * Abstract class providing an ID for entities.
  */
 @MappedSuperclass
-public abstract class AbstractEntity {
+public abstract class AbstractEntity implements Serializable {
+
+	@Serial
+	private static final long serialVersionUID = 287365087265987265L;
 
 	@Id
 	@Column(name = "id", nullable = false)

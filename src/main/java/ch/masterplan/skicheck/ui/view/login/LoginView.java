@@ -39,6 +39,8 @@ import com.vaadin.flow.router.internal.RouteUtil;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
+import java.io.Serial;
+
 /**
  * View for handling user login.
  */
@@ -46,9 +48,10 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 @PageTitle("Login")
 @Route(value = "login", layout = MainLayout.class)
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {
-
-	private final AuthenticatedUser authenticatedUser;
-	private final LanguageService languageService;
+	@Serial
+	private static final long serialVersionUID = 4568874689764L;
+	private final transient AuthenticatedUser authenticatedUser;
+	private final transient LanguageService languageService;
 
 	/**
 	 * Constructs the login view.

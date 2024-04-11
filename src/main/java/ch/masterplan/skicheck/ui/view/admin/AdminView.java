@@ -64,6 +64,7 @@ import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.data.domain.PageRequest;
 
+import java.io.Serial;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
@@ -76,11 +77,12 @@ import java.util.Set;
 @RolesAllowed("ADMIN")
 @Uses(Icon.class)
 public class AdminView extends Div implements BeforeEnterObserver {
-
+	@Serial
+	private static final long serialVersionUID = 1289795467231L;
 	private static final String PERSON_ID = "personID";
 	private static final String PERSON_EDIT_ROUTE_TEMPLATE = "admin/%s/edit";
-	private final LanguageService languageService;
-	private final ApplicationConfiguration config;
+	private final transient LanguageService languageService;
+	private final transient ApplicationConfiguration config;
 	private final Grid<UserEntity> grid = new Grid<>(UserEntity.class, false);
 	private final Button resetPayment = new Button();
 	private final Button cancel = new Button();
@@ -88,9 +90,9 @@ public class AdminView extends Div implements BeforeEnterObserver {
 	private final Button delete = new Button();
 	private final BeanValidationBinder<UserEntity> binder;
 	private final BeanValidationBinder<UserDetailEntity> binderDetails;
-	private final IUserService userService;
-	private final IUserDetailService userDetailService;
-	private final INotifier notifier;
+	private final transient IUserService userService;
+	private final transient IUserDetailService userDetailService;
+	private final transient INotifier notifier;
 	private TextField firstName;
 	private TextField lastName;
 	private TextField username;
@@ -107,7 +109,8 @@ public class AdminView extends Div implements BeforeEnterObserver {
 	 *
 	 * @param userService UserService instance for managing user-related operations.
 	 */
-	public AdminView(LanguageService languageService, ApplicationConfiguration config, IUserService userService, IUserDetailService userDetailService, Notifier notifier) {
+	public AdminView(LanguageService languageService, ApplicationConfiguration config,
+					IUserService userService, IUserDetailService userDetailService, Notifier notifier) {
 		this.languageService = languageService;
 		this.config = config;
 		this.userService = userService;
@@ -139,7 +142,6 @@ public class AdminView extends Div implements BeforeEnterObserver {
 		binderDetails.bindInstanceFields(this);
 		binderDetails.forField(hasPaid).bind(UserDetailEntity::hasPaid, UserDetailEntity::setHasPaid);
 		binderDetails.forField(equipment).bind(UserDetailEntity::getEquipment, UserDetailEntity::setEquipment);
-
 
 		// Configure and style components
 		setButtonText();
@@ -184,7 +186,8 @@ public class AdminView extends Div implements BeforeEnterObserver {
 		grid.addColumn("lastName").setAutoWidth(true).setHeader(languageService.getMessage4Key("general.lastname"));
 		grid.addColumn("username").setAutoWidth(true).setHeader(languageService.getMessage4Key("general.username"));
 		grid.addColumn("email").setAutoWidth(true).setHeader(languageService.getMessage4Key("general.email"));
-		grid.addComponentColumn(user -> createStatusIcon(user.getUserDetails().hasPaid())).setHeader(languageService.getMessage4Key("general.hasPaid")).setAutoWidth(true);
+		grid.addComponentColumn(user -> createStatusIcon(user.getUserDetails().hasPaid()))
+				.setHeader(languageService.getMessage4Key("general.hasPaid")).setAutoWidth(true);
 
 		grid.addComponentColumn(user -> {
 			Set<Equipment> eqSet = user.getUserDetails().getEquipment();

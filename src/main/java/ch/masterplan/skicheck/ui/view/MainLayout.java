@@ -59,6 +59,7 @@ import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -67,10 +68,11 @@ import java.util.Optional;
  * The main view is a top-level placeholder for other view.
  */
 public class MainLayout extends AppLayout implements HasLogger {
-
-	private final AuthenticatedUser authenticatedUser;
-	private final AccessAnnotationChecker accessChecker;
-	private final LanguageService languageService;
+	@Serial
+	private static final long serialVersionUID = 649846549854L;
+	private final transient AuthenticatedUser authenticatedUser;
+	private final transient AccessAnnotationChecker accessChecker;
+	private final transient LanguageService languageService;
 	private H2 viewTitle;
 
 	/**

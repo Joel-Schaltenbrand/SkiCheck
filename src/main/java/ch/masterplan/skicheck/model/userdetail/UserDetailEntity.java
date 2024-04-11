@@ -38,6 +38,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
+import java.io.Serial;
 import java.util.Set;
 
 /**
@@ -46,6 +47,9 @@ import java.util.Set;
 @Entity
 @Table(name = "user_details")
 public class UserDetailEntity extends AbstractEntity {
+
+	@Serial
+	private static final long serialVersionUID = 27863522765598725L;
 
 	@Column(name = "has_paid", nullable = false)
 	private boolean hasPaid;

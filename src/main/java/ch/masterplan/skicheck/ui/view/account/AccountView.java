@@ -33,81 +33,92 @@ import ch.masterplan.skicheck.model.user.UserEntity;
 import ch.masterplan.skicheck.model.userdetail.UserDetailEntity;
 import ch.masterplan.skicheck.ui.util.Notifier;
 import ch.masterplan.skicheck.ui.view.MainLayout;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.EmailValidator;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.io.Serial;
+import java.util.Optional;
+
 @PageTitle("Account")
 @Route(value = "account", layout = MainLayout.class)
 @RolesAllowed("USER")
 public class AccountView extends VerticalLayout {
-
-	private final UserService userService;
-	private final Notifier notifier;
-	private final LanguageService languageService;
-
+	@Serial
+	private static final long serialVersionUID = 8027635082675982L;
+	private final transient UserService userService;
+	private final transient Notifier notifier;
+	private final transient LanguageService languageService;
 	private final Binder<UserEntity> userBinder = new Binder<>(UserEntity.class);
 	private final Binder<UserDetailEntity> userDetailBinder = new Binder<>(UserDetailEntity.class);
 
+	/**
+	 * Constructs the account view.
+	 *
+	 * @param userService       The user service.
+	 * @param notifier          The notifier.
+	 * @param languageService   The language service.
+	 * @param authenticatedUser The authenticated user.
+	 */
 	public AccountView(UserService userService, Notifier notifier, LanguageService languageService, AuthenticatedUser authenticatedUser) {
 		this.userService = userService;
 		this.notifier = notifier;
 		this.languageService = languageService;
+		Optional<UserEntity> optionalUser = authenticatedUser.get();
+		if (optionalUser.isEmpty()) {
+			UI.getCurrent().navigate("login");
+		} else {
+			userBinder.setBean(optionalUser.get());
+			userDetailBinder.setBean(optionalUser.get().getUserDetails());
 
-		userBinder.setBean(authenticatedUser.get().get());
-		userDetailBinder.setBean(authenticatedUser.get().get().getUserDetails());
+			H2 title = new H2(languageService.getMessage4Key("general.register"));
+			TextField firstName = createTextField(languageService.getMessage4Key("general.firstname"));
+			TextField lastName = createTextField(languageService.getMessage4Key("general.lastname"));
+			EmailField email = createEmailField(languageService.getMessage4Key("general.email"));
+			MultiSelectComboBox<Equipment> equipment = createEquipmentComboBox(languageService.getMessage4Key("general.equipment"));
+			Button save = new Button(languageService.getMessage4Key("general.save"));
+			save.addClickListener(buttonClickEvent -> saveUser(optionalUser.get()));
+			save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+			Button changePasswordButton = new Button(languageService.getMessage4Key("account.changePassword"));
+			changePasswordButton.addClickListener(buttonClickEvent -> openChangePasswordPopup(optionalUser.get()));
 
-		H2 title = new H2(languageService.getMessage4Key("general.register"));
-		TextField firstName = createTextField(languageService.getMessage4Key("general.firstname"));
-		TextField lastName = createTextField(languageService.getMessage4Key("general.lastname"));
-		EmailField email = createEmailField(languageService.getMessage4Key("general.email"));
-		PasswordField password = createPasswordField(languageService.getMessage4Key("general.password"));
-		password.setRevealButtonVisible(false);
-		password.setPattern("^(?=.*[0-9])(?=.*[a-zA-Z]).{8}.*$");
-		password.setHelperText(languageService.getMessage4Key("register.password.helper"));
-		MultiSelectComboBox<Equipment> equipment = createEquipmentComboBox(languageService.getMessage4Key("general.equipment"));
-		Button save = new Button(languageService.getMessage4Key("general.save"));
-		save.addClickListener(buttonClickEvent -> saveUser());
-		save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+			userBinder.forField(firstName).asRequired(languageService.getMessage4Key("error.firstnameRequired"))
+					.bind(UserEntity::getFirstName, UserEntity::setFirstName);
+			userBinder.forField(lastName).asRequired(languageService.getMessage4Key("error.lastnameRequired"))
+					.bind(UserEntity::getLastName, UserEntity::setLastName);
+			userBinder.forField(email).asRequired(languageService.getMessage4Key("error.emailRequired"))
+					.withValidator(new EmailValidator(languageService.getMessage4Key("error.emailInvalid")))
+					.bind(UserEntity::getEmail, UserEntity::setEmail);
+			userDetailBinder.forField(equipment).bind(UserDetailEntity::getEquipment, UserDetailEntity::setEquipment);
 
-		userBinder.forField(firstName).asRequired(languageService.getMessage4Key("error.firstnameRequired"))
-				.bind(UserEntity::getFirstName, UserEntity::setFirstName);
-		userBinder.forField(lastName).asRequired(languageService.getMessage4Key("error.lastnameRequired"))
-				.bind(UserEntity::getLastName, UserEntity::setLastName);
-		userBinder.forField(email).asRequired(languageService.getMessage4Key("error.emailRequired")).withValidator(new EmailValidator(languageService.getMessage4Key("error.emailInvalid")))
-				.bind(UserEntity::getEmail, UserEntity::setEmail);
-		userBinder.forField(password).asRequired(languageService.getMessage4Key("error.passwordRequired"))
-				.bind(UserEntity::getHashedPassword, (user, passwordValue) -> {
-					if (passwordValue != null && !passwordValue.isEmpty()) {
-						user.setHashedPassword(new BCryptPasswordEncoder().encode(passwordValue));
-					}
-				});
-		userDetailBinder.forField(equipment).bind(UserDetailEntity::getEquipment, UserDetailEntity::setEquipment);
-
-		FormLayout formLayout = new FormLayout();
-		formLayout.add(title, firstName, lastName, email, password, equipment, save);
-		formLayout.setMaxWidth("1000px");
-		formLayout.setColspan(title, 2);
-		formLayout.setColspan(save, 2);
-		formLayout.getStyle().set("padding", "var(--lumo-space-l)");
-		formLayout.getStyle().set("background", "var(--lumo-base-color) linear-gradient(var(--lumo-tint-5pct), var(--lumo-tint-5pct))");
-
-		setHorizontalComponentAlignment(Alignment.CENTER, formLayout);
-
-		add(formLayout);
+			FormLayout formLayout = new FormLayout();
+			formLayout.add(title, firstName, lastName, email, equipment, save, changePasswordButton);
+			formLayout.setMaxWidth("1000px");
+			formLayout.setColspan(title, 2);
+			formLayout.setColspan(save, 2);
+			formLayout.setColspan(changePasswordButton, 2);
+			formLayout.getStyle().set("padding", "var(--lumo-space-l)");
+			formLayout.getStyle().set("background", "var(--lumo-base-color) linear-gradient(var(--lumo-tint-5pct), var(--lumo-tint-5pct))");
+			setHorizontalComponentAlignment(Alignment.CENTER, formLayout);
+			add(formLayout);
 	}
+}
 
 	private TextField createTextField(String label) {
 		TextField textField = new TextField(label);
@@ -121,12 +132,6 @@ public class AccountView extends VerticalLayout {
 		return emailField;
 	}
 
-	private PasswordField createPasswordField(String label) {
-		PasswordField passwordField = new PasswordField(label);
-		passwordField.setWidth("100%");
-		return passwordField;
-	}
-
 	private MultiSelectComboBox<Equipment> createEquipmentComboBox(String label) {
 		MultiSelectComboBox<Equipment> comboBox = new MultiSelectComboBox<>(label);
 		comboBox.setItems(Equipment.values());
@@ -134,19 +139,57 @@ public class AccountView extends VerticalLayout {
 		return comboBox;
 	}
 
-	private void saveUser() {
-		UserEntity user = new UserEntity();
+	private void saveUser(UserEntity user) {
 		if (userBinder.writeBeanIfValid(user)) {
-			UserDetailEntity userDetail = new UserDetailEntity();
+			UserDetailEntity userDetail = user.getUserDetails();
 			userDetailBinder.writeBeanIfValid(userDetail);
 			user.setUserDetails(userDetail);
 			ServiceResponse<UserEntity> response = userService.save(user);
 			if (response.getOperationWasSuccessful()) {
-				getUI().ifPresent(ui -> ui.navigate(""));
 				notifier.notifySuccess(languageService.getMessage4Key("userService.message.saved"));
 			} else {
 				notifier.notifyError(languageService.getMessage4Key("userService.message.saveError"));
 			}
+		}
+	}
+
+	private void openChangePasswordPopup(UserEntity user) {
+		Dialog passwordDialog = new Dialog();
+
+		passwordDialog.setHeaderTitle(languageService.getMessage4Key("account.changePassword"));
+
+		PasswordField newPasswordField = new PasswordField(languageService.getMessage4Key("account.newPassword"));
+		PasswordField confirmPasswordField = new PasswordField(languageService.getMessage4Key("account.confirmPassword"));
+		newPasswordField.setPattern("^(?=.*[0-9])(?=.*[a-zA-Z]).{8}.*$");
+		newPasswordField.setHelperText(languageService.getMessage4Key("register.password.helper"));
+		confirmPasswordField.setValueChangeMode(ValueChangeMode.EAGER);
+		confirmPasswordField.addValueChangeListener(e -> {
+			if (!newPasswordField.getValue().equals(confirmPasswordField.getValue())) {
+				confirmPasswordField.setInvalid(true);
+				confirmPasswordField.setErrorMessage(languageService.getMessage4Key("account.passwordsDoNotMatch"));
+			} else {
+				confirmPasswordField.setInvalid(false);
+			}
+		});
+		Button savePasswordButton = new Button(languageService.getMessage4Key("general.save"));
+		Button cancelButton = new Button(languageService.getMessage4Key("general.cancel"));
+
+		cancelButton.addClickListener(e -> passwordDialog.close());
+		savePasswordButton.addClickListener(e -> savePassword(passwordDialog, newPasswordField.getValue(), confirmPasswordField.getValue(), user));
+
+		passwordDialog.add(new VerticalLayout(newPasswordField, confirmPasswordField), new HorizontalLayout(cancelButton, savePasswordButton));
+
+		passwordDialog.open();
+	}
+
+	private void savePassword(Dialog passwordDialog, String newPassword, String confirmPassword, UserEntity user) {
+		if (!newPassword.equals(confirmPassword)) {
+			notifier.notifyError(languageService.getMessage4Key("account.passwordsDoNotMatch"));
+		} else {
+			user.setHashedPassword(new BCryptPasswordEncoder().encode(newPassword));
+			userService.save(user);
+			passwordDialog.close();
+			notifier.notifySuccess(languageService.getMessage4Key("account.passwordChanged"));
 		}
 	}
 }

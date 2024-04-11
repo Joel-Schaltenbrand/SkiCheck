@@ -40,6 +40,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 
+import java.io.Serial;
 import java.util.Set;
 
 /**
@@ -48,6 +49,9 @@ import java.util.Set;
 @Entity
 @Table(name = "application_user")
 public class UserEntity extends AbstractEntity {
+
+	@Serial
+	private static final long serialVersionUID = 287365087265987265L;
 
 	@Column(name = "username", nullable = false, unique = true)
 	private String username;
@@ -59,7 +63,7 @@ public class UserEntity extends AbstractEntity {
 	private String lastName;
 
 	@Email
-	@Column(name = "email", nullable = false, unique = true)
+	@Column(name = "email", nullable = false)
 	private String email;
 
 	@JsonIgnore

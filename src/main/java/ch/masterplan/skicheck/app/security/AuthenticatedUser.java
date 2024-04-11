@@ -59,7 +59,8 @@ public class AuthenticatedUser implements HasLogger {
 	@Transactional
 	public Optional<UserEntity> get() {
 		log().debug("Returning authenticated user");
-		return authenticationContext.getAuthenticatedUser(UserDetails.class).map(userDetails -> userRepository.findByUsername(userDetails.getUsername()));
+		return authenticationContext.getAuthenticatedUser(UserDetails.class)
+				.map(userDetails -> userRepository.findByUsername(userDetails.getUsername()));
 	}
 
 	/**
